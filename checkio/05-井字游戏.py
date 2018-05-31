@@ -24,6 +24,7 @@ def checkio(game_result):
         return list[0]
 
     return "D"
+
 # 方法二
 def checkio1(result):
     rows = result
