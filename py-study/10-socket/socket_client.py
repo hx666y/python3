@@ -27,6 +27,33 @@ class TCPClient(object):
             else:
                 self.help()
 
+    def cmd_put(self,*args):
+        cmd_split = args[0].split()
+        if len(cmd_split) > 1:
+            filename = cmd_split[1]
+            if os.path.isfile(filename):
+                filesize = os.stat(filename).st_size
+                msg_dict = {
+                    "action":"put",
+                    "filename":filename,
+                    "size":filesize,
+                    "overriden":True
+                }
+                self.client.send(json.dumps(msg_dict).encode('utf-8'))
+                #print("send",json.dumps(msg_dict))
+                self.client.recv(1024)
+                f = open(filename,'rb')
+                m = hashlib.md5()
+                for line in f:
+                    self.client.send(line)
+                    m.update(line)
+                print("file md5:", m.hexdigest())
+                f.close()
+                self.client.send(m.hexdigest().encode('utf-8'))
+                print("file send finished.")
+            else:
+                print(filename," is not exist.")
+
     def cmd_get(self, *args):
         #print(args[0].split())
         cmd_split = args[0].split()
