@@ -103,5 +103,5 @@ class TCPClient(object):
 
 if __name__ == '__main__':
     client = TCPClient()
-    client.connect("localhost",9999)
+    client.connect("10.10.1.105",9999)
     client.interactive()

@@ -20,9 +20,10 @@ class Py_Maven(object):
         self.pkgName = os.path.basename(self.War_Pkg)
 
         # 日志文件
-        self.Compile_Log = self.projectName + "-compile.log"
-        self.Package_Log = self.projectName + "-package.log"
-        self.Clean_Log = self.projectName + "-clean.log"
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.Compile_Log = self.projectName + "-" + date + "-compile.log"
+        self.Package_Log = self.projectName + "-" + date + "-package.log"
+        self.Clean_Log = self.projectName + "-" + date + "-clean.log"
 
 
     # SVN 提交记录
@@ -48,7 +49,7 @@ class Py_Maven(object):
 
     # 检验Maven编译日志
     def checklog(self,func,logfile):
-        r = os.system("/usr/bin/tail %s | /bin/grep -q 'BUILD SUCCESS' " %logfile)
+        r = os.system("tail %s | grep -q 'BUILD SUCCESS' " %logfile)
         if not r:
             print("Check mvn " + func + " success.")
         else:
@@ -92,7 +93,7 @@ class Py_Maven(object):
         print("uncompress finished.")
 
     # 代码比对及覆盖
-    def deploy(self,destName):
+    def deploy(self,destName,destSvnUrl):
         srcName = self.Dest_Project
         src_File_List = []
         dest_File_List = []
@@ -101,10 +102,11 @@ class Py_Maven(object):
         dest_Dir_List = []
 
         ops = "--username SvnUpdateU --password sdbqWt2711An --no-auth-cache"
-        # if not os.path.isdir(destName):
-        #     os.mkdir(destName)
-        # else:
-        #     pass
+        # 判断SVN目录是否存在
+        if not os.path.isdir(destName):
+            os.system("svn checkout %s %s %s"%(destSvnUrl,destName,ops))
+        else:
+            pass
 
         # Source Dir
         os.chdir(srcName)
@@ -163,7 +165,7 @@ def main():
     p.package()
     p.uncompress()
     p.svnlog()
-    p.deploy("/test/data/gameoflife")
+    p.deploy("/test/data/gameoflife","svn://10.10.1.105/aaa")
 
 
 if __name__ == '__main__':
