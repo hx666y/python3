@@ -31,19 +31,19 @@ class Py_Maven(object):
         os.chdir(self.s_dir)
         r = svn.local.LocalClient('.')
         info = r.info()
-        # date = info['commit_date']
-        # commit_date = date + datetime.timedelta(hours=8)
-        # date = str(commit_date)
-        # positon = date.rfind(".")
-        # date = date[:positon]
-        # info['commit_date'] = date
-        # message = r.log_default(limit=1)
-        # for i in message:
-        #     data = str(i)
-        #     # pattern = re.compile(r"^.*date=(.*), msg='(.*)', revision=(\d+), author='(\w+)'.*")
-        #     pattern = re.compile(r"^.*msg='(.*)', revision.*$")
-        #     m = pattern.match(data)
-        #     info['commit_msg'] = m.group(1)
+        date = info['commit_date']
+        commit_date = date + datetime.timedelta(hours=8)
+        date = str(commit_date)
+        positon = date.rfind(".")
+        date = date[:positon]
+        info['commit_date'] = date
+        message = r.log_default(limit=1)
+        for i in message:
+            data = str(i)
+            #pattern = re.compile(r"^.*date=(.*), msg='(.*)', revision=(\d+), author='(\w+)'.*")
+            pattern = re.compile(r"^.*msg='(.*)', revision.*$")
+            m = pattern.match(data)
+            info['commit_msg'] = m.group(1)
         return info
 
 
